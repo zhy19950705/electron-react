@@ -2,21 +2,56 @@
   "name": "react-electron-demo",
   "version": "0.1.0",
   "private": true,
+  "main": "app/index.js",
   "dependencies": {
     "@types/jest": "24.0.19",
     "@types/node": "12.11.6",
     "@types/react": "16.9.9",
     "@types/react-dom": "16.9.2",
+    "antd": "^3.24.2",
+    "babel-plugin-import": "^1.12.2",
+    "customize-cra": "^0.8.0",
+    "devtron": "^1.4.0",
+    "electron-debug": "^3.0.1",
+    "electron-devtools-installer": "^2.2.4",
+    "electron-is-dev": "^1.1.0",
     "react": "^16.11.0",
+    "react-app-rewire-less": "^2.1.3",
     "react-dom": "^16.11.0",
+    "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
     "typescript": "3.6.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "concurrently \"npm run start:react\" \"npm run start:electron\"",
+    "start:react": "cross-env BROWSER=none react-app-rewired start",
+    "start:electron": "wait-on http://localhost:3000 && electron app",
+    "start2": "react-app-rewired start && electron app",
+    "start3": "electron app",
+    "build": "npm run build:react-copy && npm run pack",
+    "build:win": "npm run build:react-copy && npm run pack:win",
+    "build:react": "react-app-rewired build",
+    "build:react-copy": "npm run build:react && npm run copy:electron",
+    "pack": "electron-builder",
+    "pack:win": "electron-builder --win --dir",
+    "copy:electron": "node cp.js"
+  },
+  "build": {
+    "productName": "Electron-React-Test",
+    "extends": null,
+    "files": [
+      "build/**/*"
+    ],
+    "win": {
+      "target": "zip",
+      "icon": "icons/logo.png"
+    },
+    "extraMetadata": {
+      "main": "build/index.js"
+    },
+    "directories": {
+      "buildResources": "assets"
+    }
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -32,5 +67,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^5.0.0",
+    "cross-env": "^6.0.3",
+    "electron": "^7.0.0",
+    "electron-builder": "^21.2.0",
+    "react-app-rewired": "^2.1.4",
+    "wait-on": "^3.3.0"
   }
 }
